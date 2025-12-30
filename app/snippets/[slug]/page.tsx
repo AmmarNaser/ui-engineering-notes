@@ -3,6 +3,9 @@ import path from "path";
 import { remark } from "remark";
 import html from "remark-html";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 interface SnippetPageProps {
   params: {
     slug: string;
