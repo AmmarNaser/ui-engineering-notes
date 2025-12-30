@@ -1,5 +1,7 @@
 import { remark } from "remark";
 import html from "remark-html";
+import { readFile } from "fs/promises";
+import { join } from "path";
 
 export const dynamic = "force-dynamic";
 
@@ -10,13 +12,14 @@ interface SnippetPageProps {
 }
 
 async function getSnippet(slug: string) {
-  const url = `https://raw.githubusercontent.com/AmmarNaser/ui-engineering-notes/main/content/snippets/${slug}.md`;
-
-  const res = await fetch(url, { cache: "no-store" });
-
-  if (!res.ok) return null;
-
-  return await res.text();
+  try {
+    const filePath = join(process.cwd(), "content", "snippets", `${slug}.md`);
+    const fileContent = await readFile(filePath, "utf-8");
+    return fileContent;
+  } catch (error) {
+    console.error("Error reading snippet file:", error);
+    return null;
+  }
 }
 
 export default async function SnippetPage({ params }: SnippetPageProps) {
