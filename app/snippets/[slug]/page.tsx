@@ -1,10 +1,7 @@
-import fs from "fs";
-import path from "path";
 import { remark } from "remark";
 import html from "remark-html";
 
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
 
 interface SnippetPageProps {
   params: {
@@ -12,20 +9,23 @@ interface SnippetPageProps {
   };
 }
 
-export const revalidate = 60; // مهم جدًا 👈
+async function getSnippet(slug: string) {
+  const url = `https://raw.githubusercontent.com/AmmarNaser/ui-engineering-notes/main/content/snippets/${slug}.md`;
+
+  const res = await fetch(url, { cache: "no-store" });
+
+  if (!res.ok) return null;
+
+  return await res.text();
+}
 
 export default async function SnippetPage({ params }: SnippetPageProps) {
-  const filePath = path.join(
-    process.cwd(),
-    "content/snippets",
-    `${params.slug}.md`
-  );
+  const file = await getSnippet(params.slug);
 
-  if (!fs.existsSync(filePath)) {
+  if (!file) {
     return <div className="text-red-500">Snippet not found</div>;
   }
 
-  const file = fs.readFileSync(filePath, "utf8");
   const processed = await remark().use(html).process(file);
 
   return (

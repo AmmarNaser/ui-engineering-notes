@@ -1,41 +1,45 @@
-import fs from "fs";
-import path from "path";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
 
-export const revalidate = 60; // 👈 مهم جدًا
+type GitHubFile = {
+  name: string;
+  path: string;
+  type: string;
+};
 
-const snippetsDir = path.join(process.cwd(), "content/snippets");
+async function getSnippets() {
+  const api =
+    "https://api.github.com/repos/AmmarNaser/ui-engineering-notes/contents/content/snippets";
+  const res = await fetch(api, { cache: "no-store" });
 
-export default function SnippetsPage() {
-  const files = fs.existsSync(snippetsDir)
-    ? fs.readdirSync(snippetsDir).filter((f) => f.endsWith(".md"))
-    : [];
+  if (!res.ok) return [];
+
+  const data = (await res.json()) as GitHubFile[];
+  return data.filter((f) => f.name.endsWith(".md"));
+}
+
+export default async function SnippetsPage() {
+  const files = await getSnippets();
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Snippets</h1>
 
-      {files.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400">No snippets yet.</p>
-      ) : (
-        <ul className="space-y-3">
-          {files.map((file) => {
-            const slug = file.replace(".md", "");
-            return (
-              <li key={slug}>
-                <Link
-                  href={`/snippets/${slug}`}
-                  className="text-blue-500 hover:underline">
-                  {slug}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      <ul className="space-y-3">
+        {files.map((file) => {
+          const slug = file.name.replace(".md", "");
+          return (
+            <li key={slug}>
+              <Link
+                href={`/snippets/${slug}`}
+                className="text-blue-500 hover:underline">
+                {slug}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
