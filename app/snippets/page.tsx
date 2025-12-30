@@ -2,6 +2,9 @@ import fs from "fs";
 import path from "path";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export const revalidate = 60; // 👈 مهم جدًا
 
 const snippetsDir = path.join(process.cwd(), "content/snippets");
