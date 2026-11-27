@@ -7,6 +7,12 @@ import { resolve } from "path";
 
 const SLUG_RE = /^\d{4}-\d{2}-\d{2}$/;
 
+function stripLiquidGuards(content: string): string {
+  return content
+    .replace(/^\s*{%\s*raw\s*%}\s*/i, "")
+    .replace(/\s*{%\s*endraw\s*%}\s*$/i, "");
+}
+
 export async function generateStaticParams() {
   try {
     const files = await readdir(resolve(process.cwd(), "content", "snippets"));
