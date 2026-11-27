@@ -34,7 +34,7 @@ async function getSnippet(slug: string) {
     const basePath = process.cwd();
     const filePath = resolve(basePath, "content", "snippets", `${slug}.md`);
     const fileContent = await readFile(filePath, "utf-8");
-    return fileContent;
+    return stripLiquidGuards(fileContent);
   } catch (error) {
     console.error("Error reading snippet file:", error);
     if (error instanceof Error) {
