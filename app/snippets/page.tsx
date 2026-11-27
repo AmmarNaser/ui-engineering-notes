@@ -2,8 +2,6 @@ import Link from "next/link";
 import { readdir, readFile } from "fs/promises";
 import { join, resolve } from "path";
 
-export const dynamic = "force-dynamic";
-
 function extractTitle(content: string): string {
   const lines = content.split("\n");
   

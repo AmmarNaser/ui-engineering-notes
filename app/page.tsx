@@ -2,8 +2,6 @@ import Link from "next/link";
 import { readdir, readFile } from "fs/promises";
 import { join, resolve } from "path";
 
-export const dynamic = "force-dynamic";
-
 function formatDate(slug: string): string {
   const dateMatch = slug.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (dateMatch) {

@@ -2,10 +2,24 @@ import { remark } from "remark";
 import remarkRehype from "remark-rehype";
 import rehypeHighlight from "rehype-highlight";
 import rehypeStringify from "rehype-stringify";
-import { readFile } from "fs/promises";
+import { readFile, readdir } from "fs/promises";
 import { resolve } from "path";
 
-export const dynamic = "force-dynamic";
+const SLUG_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+export async function generateStaticParams() {
+  try {
+    const files = await readdir(resolve(process.cwd(), "content", "logs"));
+    return files
+      .filter((f) => f.endsWith(".md"))
+      .map((f) => ({ slug: f.replace(/\.md$/, "") }))
+      .filter((p) => SLUG_RE.test(p.slug));
+  } catch {
+    return [];
+  }
+}
+
+export const dynamicParams = false;
 
 interface LogPageProps {
   params: Promise<{
@@ -14,6 +28,7 @@ interface LogPageProps {
 }
 
 async function getLog(slug: string) {
+  if (!SLUG_RE.test(slug)) return null;
   try {
     const basePath = process.cwd();
     const filePath = resolve(basePath, "content", "logs", `${slug}.md`);
