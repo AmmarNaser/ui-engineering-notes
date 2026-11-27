@@ -33,7 +33,7 @@ async function getLog(slug: string) {
     const basePath = process.cwd();
     const filePath = resolve(basePath, "content", "logs", `${slug}.md`);
     const fileContent = await readFile(filePath, "utf-8");
-    return fileContent;
+    return stripLiquidGuards(fileContent);
   } catch (error) {
     console.error("Error reading log file:", error);
     if (error instanceof Error) {
