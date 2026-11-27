@@ -2,6 +2,12 @@ import Link from "next/link";
 import { readdir, readFile } from "fs/promises";
 import { join, resolve } from "path";
 
+function stripLiquidGuards(content: string): string {
+  return content
+    .replace(/^\s*{%\s*raw\s*%}\s*/i, "")
+    .replace(/\s*{%\s*endraw\s*%}\s*$/i, "");
+}
+
 function formatDate(slug: string): string {
   const dateMatch = slug.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (dateMatch) {
@@ -32,7 +38,7 @@ async function getLatestSnippet() {
     const latestFile = mdFiles[0];
     const slug = latestFile.replace(".md", "");
     const filePath = resolve(snippetsDir, latestFile);
-    const content = await readFile(filePath, "utf-8");
+    const content = stripLiquidGuards(await readFile(filePath, "utf-8"));
 
     // Get first paragraph or first few lines as preview
     const preview = content
@@ -68,7 +74,7 @@ async function getLatestLog() {
     const latestFile = mdFiles[0];
     const slug = latestFile.replace(".md", "");
     const filePath = resolve(logsDir, latestFile);
-    const content = await readFile(filePath, "utf-8");
+    const content = stripLiquidGuards(await readFile(filePath, "utf-8"));
 
     // Get first paragraph or first few lines as preview
     const preview = content
