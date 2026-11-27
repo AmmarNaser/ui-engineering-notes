@@ -32,7 +32,7 @@ export default function RootLayout({
 
         <footer className="border-t border-zinc-800 mt-20">
           <div className="max-w-5xl mx-auto px-4 py-6 text-sm text-zinc-500">
-            © {new Date().getFullYear()} Ammar — UI Engineering Notes
+            © {new Date().getFullYear()} Ammar Abdel Naser — UI Engineering Notes
           </div>
         </footer>
       </body>
